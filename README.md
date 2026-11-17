@@ -1,17 +1,50 @@
-# calculator_app
+# Calculator App
 
-A new Flutter project.
+A calculator built with Flutter, with user accounts and cloud-synced calculation history.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Addition, subtraction, multiplication, division, percentage, sign toggle
+- Chained calculations (4 + 5 x 2 evaluates left to right, like a standard calculator)
+- Error handling for divide by zero, overflow, and other invalid input, each with a clear message
+- Email/password sign up and login, plus Google sign-in
+- Password visibility toggle and forgot-password flow
+- Calculation history stored per user in Firestore, with a local copy so it still works offline
+- Light and dark theme, follows the system setting
 
-A few resources to get you started if this is your first Flutter project:
+## Tech stack
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter (Dart)
+- Firebase Authentication (email/password and Google)
+- Cloud Firestore for history
+- shared_preferences for local/offline storage
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Project structure
+
+```
+lib/
+  models/     data classes
+  services/   calculator logic, auth, history - no UI code
+  utils/      exceptions and input validation
+  widgets/    reusable UI pieces
+  screens/    full app screens
+test/         unit tests for the calculator logic and validators
+```
+
+The calculator logic in `services/calculator_engine.dart` has no Flutter dependencies, which is what makes it possible to unit test directly.
+
+## Running it
+
+```
+flutter pub get
+flutter run
+```
+
+Firebase is already configured for this project. To point it at your own Firebase project instead, run `flutterfire configure` and replace `lib/firebase_options.dart`.
+
+## Tests
+
+```
+flutter test
+```
+
