@@ -70,7 +70,7 @@ class _CalcButtonState extends State<CalcButton> {
                   ? []
                   : [
                       BoxShadow(
-                        color: background.withOpacity(0.5),
+                        color: background.withValues(alpha: 0.5),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),

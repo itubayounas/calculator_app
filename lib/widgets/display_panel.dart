@@ -21,12 +21,10 @@ class DisplayPanel extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 12),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Greeting fades + slides in once when the screen first appears.
           Align(
             alignment: Alignment.centerLeft,
             child: TweenAnimationBuilder<double>(
@@ -47,35 +45,32 @@ class DisplayPanel extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 24,
-            child: AnimatedOpacity(
-              opacity: showError ? 1 : 0,
-              duration: const Duration(milliseconds: 250),
-              child: Text(
-                errorText,
-                style: TextStyle(color: colors.error, fontSize: 15),
-              ),
+          const SizedBox(height: 8),
+          AnimatedOpacity(
+            opacity: showError ? 1 : 0,
+            duration: const Duration(milliseconds: 250),
+            child: Text(
+              errorText,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: colors.error, fontSize: 14),
             ),
           ),
           const SizedBox(height: 4),
-          SizedBox(
-            height: 28,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerRight,
-              child: Text(
-                expression,
-                style: TextStyle(fontSize: 22, color: colors.onSurfaceVariant),
-              ),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerRight,
+            child: Text(
+              expression,
+              style: TextStyle(fontSize: 22, color: colors.onSurfaceVariant),
             ),
           ),
           const SizedBox(height: 4),
-          // Was 80 — too tight for a 68px font's natural line height, which
-          // is what caused the "BOTTOM OVERFLOWED BY 21 PIXELS" warning.
-          SizedBox(
-            height: 104,
+          // Expanded + FittedBox, instead of a guessed fixed height: this
+          // takes whatever space is actually left and scales the number to
+          // fit it exactly, so it's physically impossible for it to overflow
+          // regardless of screen size.
+          Expanded(
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerRight,
@@ -90,8 +85,6 @@ class DisplayPanel extends StatelessWidget {
                 ),
                 child: Text(
                   value,
-                  // key forces AnimatedSwitcher to treat each new value as a
-                  // fresh widget so it actually animates on every change
                   key: ValueKey(value),
                   style: TextStyle(
                     fontSize: 68,
