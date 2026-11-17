@@ -144,52 +144,64 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: DisplayPanel(
-                    expression: _engine.expression,
-                    value: _engine.display,
-                    errorText: _errorText,
-                    showError: _showError,
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                    child: Column(
-                      children: [
-                        for (final row in rows)
-                          Expanded(
-                            child: Row(
-                              children: [
-                                for (final key in row)
-                                  Expanded(
-                                    child: CalcButton(
-                                      // the clear key reads "AC" when there is nothing to clear
-                                      label: key == 'C' && !_engine.canClearEntry
-                                          ? 'AC'
-                                          : key,
-                                      type: _typeFor(key),
-                                      onPressed: key == '='
-                                          ? _onEquals
-                                          : () => _onKey(key),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                      ],
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.primaryContainer.withOpacity(0.25),
+              Theme.of(context).colorScheme.surface,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: DisplayPanel(
+                      greeting: 'Hi, ${widget.user.friendlyName} 👋',
+                      expression: _engine.expression,
+                      value: _engine.display,
+                      errorText: _errorText,
+                      showError: _showError,
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                      child: Column(
+                        children: [
+                          for (final row in rows)
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  for (final key in row)
+                                    Expanded(
+                                      child: CalcButton(
+                                        label: key == 'C' && !_engine.canClearEntry
+                                            ? 'AC'
+                                            : key,
+                                        type: _typeFor(key),
+                                        onPressed: key == '='
+                                            ? _onEquals
+                                            : () => _onKey(key),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

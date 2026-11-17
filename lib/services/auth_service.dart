@@ -6,8 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../models/app_user.dart';
 import '../utils/exceptions.dart';
 
-// All the Firebase Auth calls live here. Screens only talk to this class
-// and catch our own exception types.
+
 class AuthService {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
@@ -20,8 +19,9 @@ class AuthService {
   Stream<AppUser?> get authStateChanges =>
       _auth.authStateChanges().map(_toAppUser);
 
-  AppUser? _toAppUser(User? user) =>
-      user == null ? null : AppUser(uid: user.uid, email: user.email);
+  AppUser? _toAppUser(User? user) => user == null
+      ? null
+      : AppUser(uid: user.uid, email: user.email, displayName: user.displayName);
 
   Future<void> signIn(String email, String password) async {
     try {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 enum CalcButtonType { number, operator, function, equals }
 
-class CalcButton extends StatelessWidget {
+class CalcButton extends StatefulWidget {
   final String label;
   final CalcButtonType type;
   final VoidCallback onPressed;
@@ -15,12 +15,23 @@ class CalcButton extends StatelessWidget {
   });
 
   @override
+  State<CalcButton> createState() => _CalcButtonState();
+}
+
+class _CalcButtonState extends State<CalcButton> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (_pressed != value) setState(() => _pressed = value);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
     Color background;
     Color foreground;
-    switch (type) {
+    switch (widget.type) {
       case CalcButtonType.number:
         background = colors.surfaceContainerHighest;
         foreground = colors.onSurface;
@@ -41,23 +52,50 @@ class CalcButton extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(5),
-      child: Material(
-        color: background,
-        borderRadius: BorderRadius.circular(24),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(24),
-          onTap: onPressed,
-          child: Center(
-            child: label == '⌫'
-                ? Icon(Icons.backspace_outlined, color: foreground)
-                : Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w500,
-                      color: foreground,
-                    ),
-                  ),
+      child: GestureDetector(
+        onTapDown: (_) => _setPressed(true),
+        onTapUp: (_) => _setPressed(false),
+        onTapCancel: () => _setPressed(false),
+        onTap: widget.onPressed,
+        child: AnimatedScale(
+          scale: _pressed ? 0.90 : 1.0,
+          duration: const Duration(milliseconds: 90),
+          curve: Curves.easeOut,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            decoration: BoxDecoration(
+              color: background,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: _pressed
+                  ? []
+                  : [
+                      BoxShadow(
+                        color: background.withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(24),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(24),
+                onTap: widget.onPressed,
+                child: Center(
+                  child: widget.label == '⌫'
+                      ? Icon(Icons.backspace_outlined, color: foreground)
+                      : Text(
+                          widget.label,
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w500,
+                            color: foreground,
+                          ),
+                        ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

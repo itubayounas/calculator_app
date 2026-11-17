@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DisplayPanel extends StatelessWidget {
+  final String greeting;
   final String expression;
   final String value;
   final String errorText;
@@ -8,6 +9,7 @@ class DisplayPanel extends StatelessWidget {
 
   const DisplayPanel({
     super.key,
+    required this.greeting,
     required this.expression,
     required this.value,
     required this.errorText,
@@ -24,7 +26,28 @@ class DisplayPanel extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // fixed height, so the error fading in never moves anything
+          // Greeting fades + slides in once when the screen first appears.
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+              builder: (context, t, child) => Opacity(
+                opacity: t,
+                child: Transform.translate(offset: Offset(0, (1 - t) * 8), child: child),
+              ),
+              child: Text(
+                greeting,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: colors.primary,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
           SizedBox(
             height: 24,
             child: AnimatedOpacity(
@@ -49,17 +72,33 @@ class DisplayPanel extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
+          // Was 80 — too tight for a 68px font's natural line height, which
+          // is what caused the "BOTTOM OVERFLOWED BY 21 PIXELS" warning.
           SizedBox(
-            height: 80,
+            height: 104,
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerRight,
-              child: Text(
-                value,
-                style: TextStyle(
-                  fontSize: 68,
-                  fontWeight: FontWeight.w300,
-                  color: colors.onSurface,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: ScaleTransition(
+                    scale: Tween(begin: 0.85, end: 1.0).animate(animation),
+                    child: child,
+                  ),
+                ),
+                child: Text(
+                  value,
+                  // key forces AnimatedSwitcher to treat each new value as a
+                  // fresh widget so it actually animates on every change
+                  key: ValueKey(value),
+                  style: TextStyle(
+                    fontSize: 68,
+                    fontWeight: FontWeight.w300,
+                    height: 1.0,
+                    color: colors.onSurface,
+                  ),
                 ),
               ),
             ),
