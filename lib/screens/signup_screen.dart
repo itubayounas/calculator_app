@@ -41,8 +41,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _emailController.text,
         _passwordController.text,
       );
-      // The root listener now shows the calculator. This screen was pushed on
-      // top of the login screen, so we just remove it from the stack.
       if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
     } on AppAuthException catch (e) {
       if (mounted) {
@@ -54,6 +52,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Create account')),
       body: SafeArea(
@@ -68,6 +68,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const SizedBox(height: 24),
+                    Icon(Icons.person_add_alt_rounded, size: 64, color: colors.primary),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Create your account',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Sign up to save your calculation history across sessions',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: colors.onSurfaceVariant),
+                    ),
+                    const SizedBox(height: 40),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
